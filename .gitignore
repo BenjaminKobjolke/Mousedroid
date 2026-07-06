@@ -1,1 +1,5 @@
 claude-plans/
+
+# Debug / runtime log artifacts
+*.log
+tmp/commit_msg.tmp
