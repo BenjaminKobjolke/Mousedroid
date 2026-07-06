@@ -7,10 +7,25 @@ wxIMPLEMENT_APP(wxApplication);
 wxApplication::wxApplication() { }
 
 bool wxApplication::OnInit()
-{        
+{
+    instanceChecker = new wxSingleInstanceChecker();
+    if(instanceChecker->IsAnotherRunning())
+    {
+        wxMessageBox("Mousedroid is already running.", "Mousedroid", wxOK | wxICON_INFORMATION);
+        return false;
+    }
+
     main_frame = new wxMain(settings);
-    
-    server = new Server(6969, *this, settings, inputManager);
+
+    try
+    {
+        server = new Server(6969, *this, settings, inputManager);
+    }
+    catch(const std::exception &e)
+    {
+        wxMessageBox("Could not start: port 6969 is already in use.\nIs Mousedroid already running?", "Mousedroid", wxOK | wxICON_ERROR);
+        return false;
+    }
 
     Server::HostInfo hostInfo = server->GetHostInfo();
     
@@ -25,6 +40,12 @@ bool wxApplication::OnInit()
     main_frame->UpdateUI();
 
     return true;
+}
+
+int wxApplication::OnExit()
+{
+    delete instanceChecker;
+    return wxApp::OnExit();
 }
 
 void wxApplication::OnDeviceConnected(std::string device) const

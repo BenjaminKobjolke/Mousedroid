@@ -6,6 +6,8 @@
     #include "wx/wx.h"
 #endif
 
+#include "wx/snglinst.h"
+
 #include "gui/wxmain.h"
 #include "net/server.h"
 #include "settingsmanager.h"
@@ -17,11 +19,13 @@ class wxApplication : public wxApp, public Server::ConnectionListener
         wxApplication();
 
         virtual bool OnInit() override;
+        virtual int OnExit() override;
 
         virtual void OnDeviceConnected(std::string device) const override;
         virtual void OnDeviceDisconnected(std::string device) const override;
-        
+
     private:
+        wxSingleInstanceChecker *instanceChecker = nullptr;
         wxMain *main_frame = nullptr;
         Server *server = nullptr;
         

@@ -8,13 +8,18 @@ Server::Server(int port, const ConnectionListener& connectionListener, SettingsM
 	port(port),
 	connectionListener(connectionListener),
 	acceptor(context),
-	udpsocket(context, udp::endpoint(asio::ip::udp::v4(), port))
+	udpsocket(context)
 {
 	asio::ip::tcp::endpoint endpoint(asio::ip::tcp::v4(), port);
 	acceptor.open(endpoint.protocol());
 	acceptor.set_option(tcp::acceptor::reuse_address(true));
 	acceptor.bind(endpoint);
 	acceptor.listen();
+
+	udp::endpoint uep(asio::ip::udp::v4(), port);
+	udpsocket.open(uep.protocol());
+	udpsocket.set_option(udp::socket::reuse_address(true));
+	udpsocket.bind(uep);
 
 	byteBuffer = new char[Connection::MAX_BUFFER_SIZE];
 	
