@@ -12,7 +12,7 @@ android {
         applicationId "com.darusc.mousedroid"
         minSdk 28
         targetSdk 34
-        versionCode 5
+        versionCode 6
         versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -20,6 +20,9 @@ android {
 
     buildTypes {
         release {
+            // ponytail: debug-key signing (mirrors kiosk-locker) so the release APK installs.
+            // Replace with a real keystore before Play Store publishing.
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
