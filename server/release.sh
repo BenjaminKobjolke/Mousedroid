@@ -12,6 +12,7 @@ cp -r adb/* mousedroid_linux/adb/ 2>/dev/null || echo "No ADB folder found, skip
 cat <<EOF > mousedroid_linux/config.ini
 MINIMIZE_TASKBAR=0
 MOVE_SENSITIVITY=10
+PASSWORD=
 RUN_STARTUP=0
 SCROLL_SENSITIVITY=3
 EOF

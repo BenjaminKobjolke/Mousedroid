@@ -8,6 +8,7 @@ wxBEGIN_EVENT_TABLE(wxMain, wxFrame)
     EVT_CHECKBOX(CHK_MINTASK, wxMain::CheckboxCmdHandler)
     EVT_COMMAND_SCROLL(SL_MOVE, wxMain::SliderCmdHandler)
     EVT_COMMAND_SCROLL(SL_SCROLL, wxMain::SliderCmdHandler)
+    EVT_TEXT(TXT_PASSWORD, wxMain::PasswordCmdHandler)
 wxEND_EVENT_TABLE()
 
 wxMain::wxMain(SettingsManager &_settings) : 
@@ -156,6 +157,20 @@ void wxMain::InitSettingsTab()
     b2->Add(ss);
     ctrlboxsizer->Add(b2);
 
+    // ==== Security settings ====
+    wxStaticBoxSizer *secboxsizer = new wxStaticBoxSizer(wxVERTICAL, tab_settings, "Security");
+
+    wxBoxSizer *b3 = new wxBoxSizer(wxHORIZONTAL);
+    b3->Add(new wxStaticText(tab_settings, wxID_ANY, "Password:"), wxSizerFlags().Border(wxTOP, 4));
+
+    wxTextCtrl *pw = new wxTextCtrl(
+        tab_settings, TXT_PASSWORD, settings.GetPassword(),
+        wxDefaultPosition, wxSize(150, wxDefaultSize.y), wxTE_PASSWORD
+    );
+    b3->Add(pw, wxSizerFlags().Border(wxLEFT, 5));
+    secboxsizer->Add(b3, wxSizerFlags().Border(wxTOP | wxBOTTOM, 5));
+    secboxsizer->Add(new wxStaticText(tab_settings, wxID_ANY, "Empty = no password. WiFi clients must match; USB is exempt."), wxSizerFlags().Border(wxBOTTOM, 5));
+
     // ==== Info ====
     wxBoxSizer *info = new wxBoxSizer(wxVERTICAL);
 
@@ -167,6 +182,7 @@ void wxMain::InitSettingsTab()
 
     topsizer2->Add(sysboxsizer, wxSizerFlags().Expand().Border(wxALL, 5));
     topsizer2->Add(ctrlboxsizer, wxSizerFlags().Expand().Border(wxALL, 5));
+    topsizer2->Add(secboxsizer, wxSizerFlags().Expand().Border(wxALL, 5));
     topsizer2->Add(info, wxSizerFlags().Expand().Border(wxTOP, 150));
 
     tab_settings->SetSizerAndFit(topsizer2);
@@ -201,6 +217,11 @@ void wxMain::SliderCmdHandler(wxScrollEvent &evt)
         settings.SetMoveSensitivity(evt.GetPosition());
     else
         settings.SetScrollSensitivity(evt.GetPosition());
+}
+
+void wxMain::PasswordCmdHandler(wxCommandEvent &evt)
+{
+    settings.SetPassword(evt.GetString().ToStdString());
 }
 
 void wxMain::UpdateUI()

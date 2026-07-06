@@ -19,6 +19,7 @@
 #define CHK_MINTASK 1002
 #define SL_MOVE 1003
 #define SL_SCROLL 1004
+#define TXT_PASSWORD 1005
 
 #define HOST_NAME_TXT 1010
 #define HOST_IP_TXT 1011
@@ -53,6 +54,7 @@ class wxMain: public wxFrame
 
         void CheckboxCmdHandler(wxCommandEvent &evt);
         void SliderCmdHandler(wxScrollEvent &evt);
+        void PasswordCmdHandler(wxCommandEvent &evt);
 
         void HideWindow(wxIconizeEvent &evt);
         void CloseWindow(wxCloseEvent &evt);

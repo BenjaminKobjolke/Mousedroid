@@ -12,7 +12,7 @@ import com.darusc.mousedroid.networking.Connection.Mode
 
 
 @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-fun getDeviceDetails(context: Context, connectionMode: Mode): String {
+fun getDeviceDetails(context: Context, connectionMode: Mode, password: String = ""): String {
     val manufacturer = Build.MANUFACTURER
     val model = Build.MODEL
 
@@ -22,6 +22,6 @@ fun getDeviceDetails(context: Context, connectionMode: Mode): String {
         Settings.Secure.getString(context.contentResolver, "bluetooth_name")
     }
 
-    val deviceDetails = "$manufacturer/$deviceName/$model/${connectionMode.ordinal}"
+    val deviceDetails = "$manufacturer/$deviceName/$model/${connectionMode.ordinal}/$password"
     return deviceDetails
 }

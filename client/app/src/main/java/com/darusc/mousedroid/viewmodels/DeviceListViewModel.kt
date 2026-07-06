@@ -73,8 +73,11 @@ class DeviceListViewModel(
         updateState()
     }
 
-    fun add(name: String, address: String) {
-        sharedPreferences?.edit { putString(name, address) }
+    fun add(name: String, address: String, password: String = "") {
+        // ponytail: encode password into the single prefs value as "address|password"
+        // so the name -> value map keeps one entry per device. Password may not contain '|'.
+        val value = if (password.isEmpty()) address else "$address|$password"
+        sharedPreferences?.edit { putString(name, value) }
         updateState()
     }
 
@@ -87,8 +90,13 @@ class DeviceListViewModel(
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun onDeviceClick(context: Context, name: String, address: String) {
         if(mode == Connection.Mode.WIFI) {
-            val details = getDeviceDetails(context, Connection.Mode.WIFI)
-            connectionManager.connectWIFI(address, 6969, details)
+            // Recover the password stored alongside the address ("address|password")
+            val stored = sharedPreferences?.getString(name, "") ?: ""
+            val parts = stored.split("|", limit = 2)
+            val realAddress = parts[0]
+            val password = if (parts.size > 1) parts[1] else ""
+            val details = getDeviceDetails(context, Connection.Mode.WIFI, password)
+            connectionManager.connectWIFI(realAddress, 6969, details)
         } else {
             connectionManager.connectBluetooth(address)
         }
@@ -100,8 +108,10 @@ class DeviceListViewModel(
         } else {
             val devices = mutableListOf<Pair<String, String>>()
             sharedPreferences!!.all.let {
-                for((name, address) in it) {
-                    devices.add(Pair(name, address as String))
+                for((name, value) in it) {
+                    // Stored value is "address" or "address|password"; show only the address
+                    val address = (value as String).substringBefore("|")
+                    devices.add(Pair(name, address))
                 }
             }
             setState(State(devices))

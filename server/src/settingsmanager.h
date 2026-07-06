@@ -25,6 +25,8 @@ class SettingsManager
         void SetScrollSensitivity(int value);
         int GetMoveSensitivity();
         int GetScrollSensitivity();
+        void SetPassword(std::string value);
+        std::string GetPassword();
 
         void ADBOn();
         void ADBOff();

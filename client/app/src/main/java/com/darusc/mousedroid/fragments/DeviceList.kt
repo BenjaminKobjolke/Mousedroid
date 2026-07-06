@@ -179,6 +179,7 @@ class DeviceList : Fragment() {
 
         val address: TextInputEditText = pView.findViewById(R.id.textAddress)
         val name: TextInputEditText = pView.findViewById(R.id.textName)
+        val password: TextInputEditText = pView.findViewById(R.id.textPassword)
         val deviceAddBtn: MaterialButton = pView.findViewById(R.id.deviceAddConfirm)
 
         address.addTextChangedListener {
@@ -188,7 +189,7 @@ class DeviceList : Fragment() {
         }
 
         deviceAddBtn.setOnClickListener {
-            deviceListViewModel.add(name.text.toString(), address.text.toString())
+            deviceListViewModel.add(name.text.toString(), address.text.toString(), password.text.toString())
             popup.dismiss()
         }
 

@@ -32,6 +32,7 @@ copy /y app.ico dist
 (
     echo MINIMIZE_TASKBAR=0
     echo MOVE_SENSITIVITY=10
+    echo PASSWORD=
     echo RUN_STARTUP=0
     echo SCROLL_SENSITIVITY=3
 )>distconfig.ini

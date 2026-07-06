@@ -73,6 +73,24 @@ Details: [docs/INSTALL.md](docs/INSTALL.md), [docs/RELEASE.md](docs/RELEASE.md).
 
 ---
 
+## 🔒 Password protection
+
+By default any device on the network that reaches the server can control this PC.
+Set a shared password to require it:
+
+* **Server:** open the **Settings** tab and type a password in the **Security**
+  box (saved to `config.ini` as `PASSWORD=`). Empty = no password.
+* **Client:** enter the same password in the **Password** field of the add-device
+  dialog when saving the WiFi device.
+
+Notes:
+* USB (adb) connections are **exempt** — a physical cable already implies access.
+* The password is a shared secret sent in **plaintext** over the LAN (no TLS), so
+  it blocks casual access on a shared network but is not confidential against a
+  sniffer. The password itself may not contain a `|` character.
+
+---
+
 ## 🔍 Troubleshooting
 
 | Issue | Platform | Solution |

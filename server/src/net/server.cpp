@@ -1,5 +1,8 @@
 #include "net/server.h"
 
+#include <sstream>
+#include <cstdlib>
+
 #include "logger.h"
 
 Server::Server(int port, const ConnectionListener& connectionListener, SettingsManager& settings, const INPUT_MANAGER& inputmanager)
@@ -109,15 +112,38 @@ void Server::TCPDoAccept()
 		{
 			LOG("[SERVER] Device connected.", socket.remote_endpoint());
 
-			// Read the device details sent by the client (name, model, manufacturer)
+			// Read the device details sent by the client (manufacturer/name/model/ctype/password)
 			std::array<char, 128> buf;
 			size_t bytes = socket.read_some(asio::buffer(buf, 128));
 			std::string deviceDetails(buf.data(), bytes);
 
-			auto conn = std::make_shared<Connection>(this->inputmanager, std::move(socket), deviceDetails, std::bind(&Server::OnConnectionDisconnected, this, std::placeholders::_1));
-			connections.push_back(std::move(conn));
+			// Split the handshake into its '/'-delimited tokens so we can both
+			// authenticate and guard against a malformed (too short) handshake
+			// that would otherwise crash the Connection constructor.
+			std::vector<std::string> tokens;
+			std::stringstream ss(deviceDetails);
+			std::string token;
+			while (std::getline(ss, token, '/'))
+				tokens.push_back(token);
 
-			connectionListener.OnDeviceConnected(connections.back()->GetDeviceInfo().Name);
+			std::string password = settings.GetPassword();
+			int ctype = tokens.size() > 3 ? std::atoi(tokens[3].c_str()) : -1;
+			bool isUsb = (ctype == 0); // USB (physical + adb) is exempt from the password
+			bool authOk = password.empty() || isUsb || (tokens.size() > 4 && tokens[4] == password);
+
+			if (tokens.size() < 4 || !authOk)
+			{
+				LOG("[SERVER] Auth failed or malformed handshake, rejecting device.");
+				asio::error_code cec;
+				socket.close(cec);
+			}
+			else
+			{
+				auto conn = std::make_shared<Connection>(this->inputmanager, std::move(socket), deviceDetails, std::bind(&Server::OnConnectionDisconnected, this, std::placeholders::_1));
+				connections.push_back(std::move(conn));
+
+				connectionListener.OnDeviceConnected(connections.back()->GetDeviceInfo().Name);
+			}
 		}
 
 		TCPDoAccept();

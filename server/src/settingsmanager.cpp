@@ -78,6 +78,17 @@ void SettingsManager::SetScrollSensitivity(int value)
     SaveConfigs();
 }
 
+void SettingsManager::SetPassword(std::string value)
+{
+    settings["PASSWORD"] = value;
+    SaveConfigs();
+}
+
+std::string SettingsManager::GetPassword()
+{
+    return settings["PASSWORD"];
+}
+
 std::string SettingsManager::GetFilePath()
 {
     #ifdef _WIN32
