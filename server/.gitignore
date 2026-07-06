@@ -5,3 +5,9 @@ cmake
 resource.o
 .vs
 out
+
+# Generated deployment output
+dist/
+
+# Runtime logs
+*.log
