@@ -21,22 +21,24 @@ Mousedroid uses a cross-platform CMake build system. Follow the instructions bel
 
 ### **Windows**
 
-1.  **Install Dependencies via vcpkg** Open your terminal (PowerShell or CMD) and run:
-    ```powershell
-    vcpkg install asio:x64-windows wxwidgets:x64-windows
-    vcpkg integrate install
+**Prerequisites:** `git` on PATH, and Visual Studio 2022 with the
+**"Desktop development with C++"** workload.
+
+1.  **One-time setup** — clones vcpkg to `%USERPROFILE%\vcpkg` and builds the
+    dependencies (asio + wxWidgets; first run can take 30+ min):
+    ```bat
+    server\install.bat
     ```
 
-2.  **Open & Build in Visual Studio** * Open **Visual Studio**.
-    * Select **"Open a local folder"** and choose the Mousedroid project root.
-    * Visual Studio will detect `CMakeLists.txt`. 
-    * Set the configuration dropdown to **x64-Release**.
-    * Go to **Build > Build All**.
-
-3.  **Deploy** Run the deployment script to collect the executable and its dependencies into the `mousedroid_win64/` folder:
-    ```powershell
-    ./release.bat
+2.  **Build + deploy** — compiles x64-Release and copies the result into
+    `server\dist\`:
+    ```bat
+    server\release.bat
     ```
+    Re-run this after any code change. If you keep vcpkg elsewhere, set the
+    `VCPKG_ROOT` environment variable and both scripts use it.
+
+Details: [docs/INSTALL.md](docs/INSTALL.md), [docs/RELEASE.md](docs/RELEASE.md).
 
 
 
