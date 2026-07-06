@@ -3,3 +3,6 @@ claude-plans/
 # Debug / runtime log artifacts
 *.log
 tmp/commit_msg.tmp
+claude-plans
+client/tools/release.ini
+server/mousedroid/
