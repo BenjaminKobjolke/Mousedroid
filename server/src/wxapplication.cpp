@@ -41,15 +41,15 @@ void wxApplication::OnDeviceDisconnected(std::string device) const
 
 void wxApplication::OnWindowCloseEvent(wxCloseEvent &evt)
 {
-    wxMessageDialog *box = new wxMessageDialog(main_frame, "This will disconnect all connected devices. Proceed?", "Confirm", wxYES_NO | wxICON_INFORMATION);
-
-    int res = box->ShowModal();
-
-    if(res == wxID_YES)
+    if(!server->GetConnectedDevicesInfo().empty())
     {
-        main_frame->Hide();
-        server->Close();
-        Logger::monitor->Destroy();
-        main_frame->Destroy();
+        wxMessageDialog *box = new wxMessageDialog(main_frame, "This will disconnect all connected devices. Proceed?", "Confirm", wxYES_NO | wxICON_INFORMATION);
+        if(box->ShowModal() != wxID_YES)
+            return;
     }
+
+    main_frame->Hide();
+    server->Close();
+    Logger::monitor->Destroy();
+    main_frame->Destroy();
 }
