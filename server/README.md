@@ -81,5 +81,7 @@ Details: [docs/INSTALL.md](docs/INSTALL.md), [docs/RELEASE.md](docs/RELEASE.md).
 | **Mouse not moving** | Linux | Ensure `install.sh` was run and you have restarted your session to apply udev rules. |
 | **No Tray Icon** | Linux | If using Wayland, tray icons may be hidden. Try switching to an X11 session. |
 | **vcpkg Triplets** | Windows | Ensure you are targeting `x64-windows`. Use `vcpkg install ...:x86-windows` if you need 32-bit. |
+| **"Already running" message on launch** | All | A single-instance guard blocks a second copy. Mousedroid minimizes to the tray / can run at startup — check the tray or task manager and close the existing instance before relaunching. |
+| **"bind: Only one usage of each socket address..."** | Windows | Port `6969` (TCP+UDP) is held by another process — usually a leftover Mousedroid instance. Close it (`taskkill /F /IM Mousedroid.exe`), or a stale `adb reverse` tunnel is holding the port; kill the `adb` server. |
 
 ---
